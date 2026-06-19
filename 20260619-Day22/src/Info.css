@@ -1,0 +1,61 @@
+/*  Info.css */
+
+body {
+  padding: 60px;
+}
+
+.profile {
+  width: 300px;
+  height: 300px;
+
+  margin-bottom: 30px;
+
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+  /* 가운데 정렬  */
+  text-align: center;
+
+  padding: 20px;
+
+  /* 나를 기준으로 움직여라! */
+  position: relative;
+}
+
+.profile img {
+  border: 1px solid #ccc;
+  border-radius: 100px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.profile p {
+  color: gray;
+  font-size: 13px;
+}
+
+/* new 배지달기! */
+.new-tag {
+  display: inline;
+  background-color: lightcoral;
+  padding: 3px 8px;
+  font-weight: bold;
+  border-radius: 10px;
+
+  color: white;
+
+  /* 내가 원하는 곳에 붙이기 
+    기준을 정하지 않으면 브라우저 기준!
+  */
+  position: absolute;
+  top: 0;
+  right: 80px;
+}
+
+/* 만약 가로 정렬  상위 태그만!  */
+/* .profiles {
+  display: flex;
+  gap: 30px;
+
+  flex-wrap: wrap;
+} */
