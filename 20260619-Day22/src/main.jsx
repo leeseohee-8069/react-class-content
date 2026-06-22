@@ -13,6 +13,6 @@ import ProductPage from "./ProductPage.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ProductPage />
+    <Info />
   </StrictMode>,
 );
