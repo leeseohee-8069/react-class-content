@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="ko" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>모바일 웹앱 기본 템플릿</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                "Inter",
+                "system-ui",
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Segoe UI",
+                "Roboto",
+                "Helvetica Neue",
+                "Arial",
+                "sans-serif",
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <!-- Google Fonts (Inter) & FontAwesome Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* 모바일 스크롤바 숨기기 */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* 터치 딜레이 방지 및 네이티브 앱 느낌의 터치 하이라이트 제거 */
+      * {
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center font-sans transition-colors duration-300"
+  >
+    <!-- 데스크톱에서는 스마트폰 크기 목업, 모바일에서는 전체화면으로 렌더링 -->
+    <div
+      class="w-full h-screen sm:max-w-md sm:h-[840px] sm:rounded-[40px] sm:shadow-2xl sm:border-[8px] sm:border-slate-800 dark:sm:border-slate-700 overflow-hidden relative flex flex-col bg-slate-50 dark:bg-slate-950 transition-colors duration-300"
+    >
+      <!-- 스마트폰 노치/스피커 (데스크톱 뷰에서만 시각화) -->
+      <div
+        class="hidden sm:block absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-6 bg-slate-800 dark:bg-slate-700 rounded-b-2xl z-50"
+      ></div>
+
+      <!-- 상단 헤더 영역 -->
+      <header
+        class="flex items-center justify-between px-5 pt-6 sm:pt-10 pb-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-30 transition-colors duration-300 shadow-sm"
+      >
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-blue-600 animate-pulse"></span>
+          <h1 class="font-bold text-lg tracking-tight" id="header-title">홈</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <!-- 다크모드 토글 버튼 -->
+          <button
+            id="theme-toggle"
+            class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-200"
+          >
+            <!-- 해 아이콘 -->
+            <svg
+              id="theme-sun"
+              class="w-5 h-5 hidden"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+              />
+            </svg>
+            <!-- 달 아이콘 -->
+            <svg
+              id="theme-moon"
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
+            </svg>
+          </button>
+
+          <!-- 알림 배지 단축 버튼 -->
+          <button
+            onclick="showToast('설정 페이지로 이동합니다.')"
+            class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all duration-200"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- 메인 콘텐츠 영역 (스크롤 가능) -->
+      <main
+        class="flex-1 overflow-y-auto no-scrollbar pb-24 bg-slate-50 dark:bg-slate-950 transition-colors duration-300"
+      >
+        <!-- 1. HOME TAB SCREEN -->
+        <div id="tab-home" class="tab-content px-5 py-6 space-y-6">
+          <!-- 웰컴 배너 카드 -->
+          <div
+            class="p-6 rounded-3xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-lg relative overflow-hidden"
+          >
+            <div
+              class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-xl"
+            ></div>
+            <p class="text-sm font-light text-blue-100">안녕하세요!</p>
+            <h2 class="text-2xl font-bold mt-1 leading-snug">
+              오늘도 멋진 앱을<br />설계해 볼까요?
+            </h2>
+            <button
+              onclick="showToast('시작하기 완료!')"
+              class="mt-4 px-4 py-2 bg-white text-blue-600 rounded-xl text-xs font-semibold shadow-sm hover:bg-slate-100 transition-colors duration-200"
+            >
+              가이드 시작하기
+            </button>
+          </div>
+
+          <!-- 퀵 대시보드 리스트 -->
+          <div>
+            <h3
+              class="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3"
+            >
+              대시보드
+            </h3>
+            <div class="grid grid-cols-2 gap-4">
+              <div
+                class="p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-all duration-200 active:scale-[0.98]"
+                onclick="showToast('방문자 분석 페이지 오픈')"
+              >
+                <span class="text-blue-500 font-bold text-lg">1,240</span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  일일 방문자 수
+                </p>
+              </div>
+              <div
+                class="p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-all duration-200 active:scale-[0.98]"
+                onclick="showToast('수익 관리 페이지 오픈')"
+              >
+                <span class="text-emerald-500 font-bold text-lg">₩245,000</span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  오늘의 수익금
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 피드 카드 섹션 -->
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3
+                class="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider"
+              >
+                새로운 피드
+              </h3>
+              <button
+                onclick="showToast('전체보기')"
+                class="text-xs text-blue-500 font-medium"
+              >
+                전체보기
+              </button>
+            </div>
+            <div class="space-y-4">
+              <!-- 피드 아이템 1 -->
+              <div
+                class="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex gap-4"
+              >
+                <div
+                  class="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-950 flex-shrink-0 flex items-center justify-center text-orange-600 dark:text-orange-400 text-lg"
+                >
+                  🎨
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm">
+                    트렌디한 웹디자인 팁 5가지
+                  </h4>
+                  <p
+                    class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2"
+                  >
+                    하단 네비게이션과 시각적인 조화를 이루는 컬러 조합 및 모바일
+                    친화형 폰트 구성법을 소개합니다.
+                  </p>
+                  <span
+                    class="text-[10px] text-slate-400 dark:text-slate-500 mt-2 block"
+                    >방금 전 · 디자인</span
+                  >
+                </div>
+              </div>
+              <!-- 피드 아이템 2 -->
+              <div
+                class="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex gap-4"
+              >
+                <div
+                  class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 flex-shrink-0 flex items-center justify-center text-purple-600 dark:text-purple-400 text-lg"
+                >
+                  ⚡
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-sm">
+                    웹 개발 성능 최적화 가이드
+                  </h4>
+                  <p
+                    class="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2"
+                  >
+                    CSS 및 JS의 용량을 극적으로 줄여서 로딩 속도를 향상시키고 UX
+                    점수를 높이는 최적화 방안입니다.
+                  </p>
+                  <span
+                    class="text-[10px] text-slate-400 dark:text-slate-500 mt-2 block"
+                    >1시간 전 · 개발</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. SEARCH TAB SCREEN -->
+        <div id="tab-search" class="tab-content px-5 py-6 space-y-6 hidden">
+          <!-- 검색창 -->
+          <div class="relative">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </span>
+            <input
+              type="text"
+              placeholder="검색어를 입력해보세요"
+              class="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all shadow-sm"
+            />
+          </div>
+
+          <!-- 인기 카테고리 -->
+          <div>
+            <h3
+              class="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3"
+            >
+              인기 카테고리
+            </h3>
+            <div class="grid grid-cols-3 gap-3">
+              <button
+                onclick="showToast('라이프스타일 카테고리')"
+                class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-center text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                🌱 라이프
+              </button>
+              <button
+                onclick="showToast('비즈니스 카테고리')"
+                class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-center text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                💼 비즈니스
+              </button>
+              <button
+                onclick="showToast('테크 카테고리')"
+                class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-center text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                💻 테크
+              </button>
+              <button
+                onclick="showToast('스포츠 카테고리')"
+                class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-center text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                ⚽ 스포츠
+              </button>
+              <button
+                onclick="showToast('금융 카테고리')"
+                class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-center text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                📈 금융
+              </button>
+              <button
+                onclick="showToast('교육 카테고리')"
+                class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 text-center text-xs font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                🎓 교육
+              </button>
+            </div>
+          </div>
+
+          <!-- 실시간 검색어 -->
+          <div>
+            <h3
+              class="text-sm font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3"
+            >
+              인기 급상승 키워드
+            </h3>
+            <div
+              class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden shadow-sm"
+            >
+              <div
+                onclick="showToast('실시간 1위: 모바일 UX 디자인')"
+                class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              >
+                <span class="text-xs text-slate-500"
+                  ><strong class="text-blue-500 mr-2">1</strong>모바일 UX
+                  디자인</span
+                >
+                <span class="text-[10px] text-emerald-500">▲ 24</span>
+              </div>
+              <div
+                onclick="showToast('실시간 2위: 하단 버튼 가이드')"
+                class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              >
+                <span class="text-xs text-slate-500"
+                  ><strong class="text-blue-500 mr-2">2</strong>하단 버튼
+                  가이드</span
+                >
+                <span class="text-[10px] text-emerald-500">▲ 12</span>
+              </div>
+              <div
+                onclick="showToast('실시간 3위: 반응형 웹앱')"
+                class="flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              >
+                <span class="text-xs text-slate-500"
+                  ><strong class="text-blue-500 mr-2">3</strong>반응형
+                  웹앱</span
+                >
+                <span class="text-[10px] text-slate-400">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. NOTIFICATIONS TAB SCREEN -->
+        <div
+          id="tab-notifications"
+          class="tab-content px-5 py-6 space-y-4 hidden"
+        >
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+              최근 7일 동안의 알림입니다.
+            </p>
+            <button
+              onclick="showToast('알림을 모두 읽음 처리했습니다')"
+              class="text-xs text-blue-500"
+            >
+              모두 읽음
+            </button>
+          </div>
+
+          <!-- 알림 카드 1 -->
+          <div
+            class="p-4 bg-white dark:bg-slate-900 rounded-2xl border-l-4 border-l-blue-500 border-y border-r border-slate-100 dark:border-slate-800 shadow-sm flex gap-3"
+          >
+            <div
+              class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"
+            ></div>
+            <div>
+              <p class="text-sm font-semibold">🎉 회원가입 환영 선물 도착!</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                지금 바로 하단 추가 버튼을 눌러서 프로필을 완벽하게 완성하고
+                선물을 받아보세요.
+              </p>
+              <span class="text-[10px] text-slate-400 mt-2 block">10분 전</span>
+            </div>
+          </div>
+
+          <!-- 알림 카드 2 -->
+          <div
+            class="p-4 bg-white dark:bg-slate-900 rounded-2xl border-l-4 border-l-emerald-500 border-y border-r border-slate-100 dark:border-slate-800 shadow-sm flex gap-3"
+          >
+            <div
+              class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"
+            ></div>
+            <div>
+              <p class="text-sm font-semibold">📈 오늘의 실적 리포트 발행</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                어제 대비 트래픽이 23% 상승했습니다. 대시보드를 확인하여 확인해
+                보세요.
+              </p>
+              <span class="text-[10px] text-slate-400 mt-2 block"
+                >2시간 전</span
+              >
+            </div>
+          </div>
+
+          <!-- 알림 카드 3 -->
+          <div
+            class="p-4 bg-white dark:bg-slate-900 rounded-2xl border-l-4 border-l-slate-300 dark:border-l-slate-700 border-y border-r border-slate-100 dark:border-slate-800 shadow-sm opacity-60 flex gap-3"
+          >
+            <div
+              class="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700 mt-1.5 flex-shrink-0"
+            ></div>
+            <div>
+              <p class="text-sm font-semibold">🔧 시스템 보안 업데이트 공지</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                사용자 여러분의 안전한 데이터 보안 유지를 위해 정기 백업 점검이
+                완료되었습니다.
+              </p>
+              <span class="text-[10px] text-slate-400 mt-2 block">어제</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PROFILE TAB SCREEN -->
+        <div id="tab-profile" class="tab-content px-5 py-6 space-y-6 hidden">
+          <!-- 유저 프로필 헤더 카드 -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center text-center"
+          >
+            <div
+              class="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 mb-4 shadow-md"
+            >
+              <div
+                class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden"
+              >
+                <span class="text-3xl">🧑‍💻</span>
+              </div>
+            </div>
+            <h3 class="font-bold text-lg">기본 사용자</h3>
+            <p class="text-xs text-slate-400 mt-1">dev.user@example.com</p>
+
+            <div class="flex items-center gap-2 mt-4">
+              <span
+                class="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 text-xs font-semibold"
+                >PRO 멤버십</span
+              >
+              <span
+                class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold"
+                >인증유저</span
+              >
+            </div>
+          </div>
+
+          <!-- 앱 설정 옵션 리스트 -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden shadow-sm"
+          >
+            <div
+              onclick="showToast('알림 설정 페이지 이동')"
+              class="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+            >
+              <span class="text-sm font-medium">🔔 알림 관리</span>
+              <svg
+                class="w-4 h-4 text-slate-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+            <div
+              onclick="showToast('테마 개인설정 페이지 이동')"
+              class="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+            >
+              <span class="text-sm font-medium">🎨 디자인 커스텀</span>
+              <svg
+                class="w-4 h-4 text-slate-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+            <div
+              onclick="showToast('로그아웃 기능')"
+              class="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+            >
+              <span class="text-sm font-medium text-red-500">🚪 로그아웃</span>
+              <svg
+                class="w-4 h-4 text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- 📱 하단 고정 바 (Bottom Navigation Bar) -->
+      <nav
+        class="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800/80 px-4 pb-6 sm:pb-8 pt-3 z-30 transition-colors duration-300 shadow-[0_-2px_10px_rgba(0,0,0,0.03)]"
+      >
+        <div class="flex items-center justify-between max-w-full">
+          <!-- 홈 버튼 -->
+          <button
+            onclick="switchTab('home')"
+            id="btn-home"
+            class="nav-btn flex flex-col items-center justify-center flex-1 py-1 text-blue-600 dark:text-blue-400 transition-all duration-200"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            <span class="text-[10px] font-semibold mt-1">홈</span>
+          </button>
+
+          <!-- 검색 버튼 -->
+          <button
+            onclick="switchTab('search')"
+            id="btn-search"
+            class="nav-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all duration-200"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <span class="text-[10px] font-semibold mt-1">검색</span>
+          </button>
+
+          <!-- 액션 센터 버튼 (플러스) - 중앙 강조형 -->
+          <div class="flex-1 flex justify-center -mt-6">
+            <button
+              id="btn-create"
+              class="w-14 h-14 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 hover:scale-105 active:scale-95 transition-all duration-200 z-40 border-4 border-slate-50 dark:border-slate-950"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3.5"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <!-- 알림 버튼 -->
+          <button
+            onclick="switchTab('notifications')"
+            id="btn-notifications"
+            class="nav-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all duration-200 relative"
+          >
+            <!-- 읽지 않은 알림 레드 도트 -->
+            <span
+              class="absolute top-1 right-5 w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900"
+            ></span>
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+              />
+            </svg>
+            <span class="text-[10px] font-semibold mt-1">알림</span>
+          </button>
+
+          <!-- 프로필 버튼 -->
+          <button
+            onclick="switchTab('profile')"
+            id="btn-profile"
+            class="nav-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-all duration-200"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            <span class="text-[10px] font-semibold mt-1">내 정보</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- 🔝 바텀 시트 (Bottom Sheet) & 뒷배경 오버레이 -->
+      <div
+        id="modal-overlay"
+        class="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-300 z-40"
+      ></div>
+
+      <div
+        id="bottom-sheet"
+        class="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-[32px] translate-y-full transition-transform duration-300 z-50 px-6 pt-4 pb-12 shadow-2xl border-t border-slate-100 dark:border-slate-800/80"
+      >
+        <!-- 드래그 핸들 데코레이션 -->
+        <div
+          class="w-12 h-1 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-6"
+        ></div>
+
+        <h3 class="font-bold text-lg mb-2">빠른 작업 시작</h3>
+        <p class="text-xs text-slate-400 dark:text-slate-500 mb-6">
+          원하시는 추가 작업을 선택하여 서비스를 시작해 보세요.
+        </p>
+
+        <!-- 기능 버튼 목록 -->
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            onclick="handleAction('새 피드 작성')"
+            class="p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl flex items-center gap-3 transition-colors text-left"
+          >
+            <span class="text-2xl">✍️</span>
+            <div>
+              <p class="text-sm font-semibold">피드 올리기</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">자유로운 글쓰기</p>
+            </div>
+          </button>
+          <button
+            onclick="handleAction('이미지 업로드')"
+            class="p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl flex items-center gap-3 transition-colors text-left"
+          >
+            <span class="text-2xl">📸</span>
+            <div>
+              <p class="text-sm font-semibold">사진 업로드</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">갤러리 선택</p>
+            </div>
+          </button>
+          <button
+            onclick="handleAction('공유 링크 생성')"
+            class="p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl flex items-center gap-3 transition-colors text-left"
+          >
+            <span class="text-2xl">🔗</span>
+            <div>
+              <p class="text-sm font-semibold">링크 공유</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">외부 주소 복사</p>
+            </div>
+          </button>
+          <button
+            onclick="handleAction('새 폴더 생성')"
+            class="p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl flex items-center gap-3 transition-colors text-left"
+          >
+            <span class="text-2xl">📁</span>
+            <div>
+              <p class="text-sm font-semibold">보관함 만들기</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">그룹 수집</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 🔔 커스텀 토스트 알림창 -->
+      <div
+        id="toast-message"
+        class="absolute top-16 left-1/2 transform -translate-x-1/2 px-5 py-3 bg-slate-900/90 dark:bg-slate-50/90 text-white dark:text-slate-900 rounded-2xl text-xs font-semibold shadow-xl opacity-0 scale-90 pointer-events-none transition-all duration-300 z-50 flex items-center gap-2 whitespace-nowrap"
+      >
+        <span class="text-sm">🔔</span>
+        <span id="toast-text">알림 내용이 노출됩니다.</span>
+      </div>
+    </div>
+
+    <!-- 스크립트 기능 처리 -->
+    <script>
+      // 상단 헤더 타이틀 매핑
+      const tabTitles = {
+        home: "홈",
+        search: "탐색 및 검색",
+        notifications: "알림 센터",
+        profile: "마이 프로필",
+      };
+
+      // 탭 전환 엔진
+      function switchTab(tabName) {
+        // 모든 탭 스크린 내용 가리기
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.add("hidden");
+        });
+
+        // 모든 네비게이션 버튼 비활성화 컬러로 초기화
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.classList.remove("text-blue-600", "dark:text-blue-400");
+          btn.classList.add(
+            "text-slate-400",
+            "hover:text-slate-600",
+            "dark:hover:text-slate-200",
+          );
+        });
+
+        // 지정된 탭 활성화 노출
+        const activeTab = document.getElementById(`tab-${tabName}`);
+        if (activeTab) {
+          activeTab.classList.remove("hidden");
+        }
+
+        // 지정된 네비게이션 버튼 하이라이트 활성화
+        const activeBtn = document.getElementById(`btn-${tabName}`);
+        if (activeBtn) {
+          activeBtn.classList.add("text-blue-600", "dark:text-blue-400");
+          activeBtn.classList.remove(
+            "text-slate-400",
+            "hover:text-slate-600",
+            "dark:hover:text-slate-200",
+          );
+        }
+
+        // 헤더 제목 실시간 변경
+        document.getElementById("header-title").textContent =
+          tabTitles[tabName] || "홈";
+      }
+
+      // 바텀 시트 열기 / 닫기 컨트롤러
+      const btnCreate = document.getElementById("btn-create");
+      const bottomSheet = document.getElementById("bottom-sheet");
+      const modalOverlay = document.getElementById("modal-overlay");
+
+      function toggleBottomSheet(isOpen) {
+        if (isOpen) {
+          modalOverlay.classList.remove("pointer-events-none", "opacity-0");
+          modalOverlay.classList.add("opacity-100");
+          bottomSheet.classList.remove("translate-y-full");
+          bottomSheet.classList.add("translate-y-0");
+        } else {
+          modalOverlay.classList.add("pointer-events-none");
+          modalOverlay.classList.remove("opacity-100");
+          modalOverlay.classList.add("opacity-0");
+          bottomSheet.classList.remove("translate-y-0");
+          bottomSheet.classList.add("translate-y-full");
+        }
+      }
+
+      btnCreate.addEventListener("click", () => toggleBottomSheet(true));
+      modalOverlay.addEventListener("click", () => toggleBottomSheet(false));
+
+      // 바텀시트 메뉴 내부 액션 처리
+      function handleAction(actionName) {
+        toggleBottomSheet(false);
+        showToast(`${actionName} 기능이 실행되었습니다!`);
+      }
+
+      // 토스트 알림 메시지 출력
+      let toastTimeout;
+      function showToast(message) {
+        const toast = document.getElementById("toast-message");
+        const toastText = document.getElementById("toast-text");
+
+        toastText.textContent = message;
+
+        // 기존 타이머 클리어
+        clearTimeout(toastTimeout);
+
+        // 활성화 스타일 추가
+        toast.classList.remove("opacity-0", "scale-90", "pointer-events-none");
+        toast.classList.add("opacity-100", "scale-100");
+
+        // 2.5초 후 닫기
+        toastTimeout = setTimeout(() => {
+          toast.classList.remove("opacity-100", "scale-100");
+          toast.classList.add("opacity-0", "scale-90", "pointer-events-none");
+        }, 2500);
+      }
+
+      // 다크 모드 활성화 / 비활성화 제어
+      const themeToggleBtn = document.getElementById("theme-toggle");
+      const sunIcon = document.getElementById("theme-sun");
+      const moonIcon = document.getElementById("theme-moon");
+
+      themeToggleBtn.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.toggle("dark");
+
+        if (isDark) {
+          sunIcon.classList.remove("hidden");
+          moonIcon.classList.add("hidden");
+          showToast("다크모드가 켜졌습니다.");
+        } else {
+          sunIcon.classList.add("hidden");
+          moonIcon.classList.remove("hidden");
+          showToast("라이트모드가 켜졌습니다.");
+        }
+      });
+
+      // 윈도우 로드 완료 후 애니메이션 처리 활성화
+      window.onload = function () {
+        // 첫 화면 로드시 기본 탭 활성화 상태 확인
+        switchTab("home");
+      };
+    </script>
+  </body>
+</html>
