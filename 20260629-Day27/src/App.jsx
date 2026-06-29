@@ -1,37 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+import Signup from "./signup";
 
 export default function App() {
-  // 자바스크립트 변수는 화면에 안보인다.
-  let 체크박스값 = "";
-
-  // 리액트에서 값을 저장할 때는 useState()
-  // checked 는 변수 값을 사용할 때
-  // setChecked 값 바꾸고 화면도 다시 적용해!(리렌더링)
-  // 실제 체크 박스들은 태그 안에 설정으로 체크가
-  // 되었는지 안 되었는지 저장하는 설정값!
-
-  let [checked, setChecked] = useState(false);
-  return (
-    <div>
-      <h2>체크박스를 클릭할때마다 값을 저장</h2>
-      {/* 리액트 실행 - 코덱스 리액트  vite실행해!npm run dev */}
-      <label>
-        <input
-          type="checkbox"
-          onChange={(이벤트정보) => {
-            setChecked(이벤트정보.target.checked);
-          }}
-        />
-        약관에 동의합니다.
-      </label>
-
-      <h3>체크한 값 확인 : {checked + ""}</h3>
-    </div>
-  );
+  return <Signup />;
 }
-// HTML도 리액트도 똑같다!
-// 태그 내용은(content)부분 true,false,null
-// 화면에 안 보인다. 문자만!
-// true -> 1
-// false -> 0 변환
-// 컴퓨터는 숫자만 알고 있다. 거짓은 무조건 0
