@@ -1,0 +1,51 @@
+/* index.css
+ dev (Development)
+ - 개발자가 코드를 작성하면서 확인하는 환경 
+ - npm run dev 
+
+ 코드 저장하면 바로 실행!
+ 에러를 자세히 보여줌 (실무 .log)
+ 디버깅하기 ( 테스트) 
+ 
+ build (빌드)
+  - 개발이 끝난 후 사용자에게 배포할 파일을 만드는 과정
+  - npm run build
+  - 폴더 /dist 생성이 되면서 여기에 압축 파일들!
+  파일의 크기 감소
+  페이지 로딩 속도 향상 
+  사용자에게 더 빠른 서비스 제공!
+
+
+ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-size: 16px;
+}
+img {
+  width: 500px;
+  height: 300px;
+}
+
+/*모바일로 들어왔을때 기본 폰트 크기만 변경
+@media (max-width: 500px) {
+  /* 기본 브라우저의 폰트 사이즈를 기준으로 배수! 
+  * {
+    font-size: 8px;
+  }
+}
+
+@media (min-width: 501px) and (max-width: 1024px) {
+  * {
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 1025px) {
+  * {
+    font-size: 16px;
+  }
+}
+*/
